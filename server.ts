@@ -8,5 +8,6 @@ app.use(router.routes())
 app.use(router.allowedMethods())
 
 console.log(`server live on port  ${port}`)
+console.log('Hello Terra')
 
 await app.listen({ port })
