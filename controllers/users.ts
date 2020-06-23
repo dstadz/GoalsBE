@@ -5,14 +5,14 @@ import { User } from '../types.ts'
 let users = [
   {
     id: '1',
-    name: 'first',
-    description: 'a thing.',
-    price: 5.99
+    name: 'Bob1',
+    email: 'bob@email.com',
+    sign_up_date: 100000
   },{
     id: '2',
-    name: 'second',
-    description: 'another thing.',
-    price: 15.99
+    name: 'Alice',
+    email: 'A@lice.com',
+    sign_up_date: 100001
   }
 ]
 
