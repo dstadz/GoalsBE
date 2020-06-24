@@ -1,11 +1,11 @@
 import { Application } from 'http://deno.land/x/oak/mod.ts'
-import router from './routes.ts'
+import userRouter from './routes/users.ts'
 const port = 8000
 
 const app = new Application()
 
-app.use(router.routes())
-app.use(router.allowedMethods())
+app.use(userRouter.routes())
+app.use(userRouter.allowedMethods())
 
 console.log(`server live on port  ${port}`)
 
