@@ -89,8 +89,8 @@ const addGoal = async ({ request, response }:
   } else {
     try {
       await client.connect()
-      const result = await client.query(`INSERT INTO goals(name, email, birth)
-      VALUES('${goal.name}', '${goal.email}','${goal.birth}')`)
+      const result = await client.query(`INSERT INTO goals(user_id, goal, completed, target_date)
+      VALUES('${goal.user_id}', '${goal.goal}',false,'${goal.target_date}')`)
 
       response.status = 201
       response.body = {
@@ -134,9 +134,9 @@ const updateGoal = async ({ params, request, response }:
         await client.connect()
 
         const result = await client.query(`UPDATE goals SET
-          name='${goal.name}',
-          email='${goal.email}',
-          birth='${goal.birth}'
+          goal='${goal.goal}',
+          target_date='${goal.target_date}',
+          completed='${goal.completed}'
           WHERE id=${params.id}`)
 
         response.status = 200
