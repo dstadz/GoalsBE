@@ -89,8 +89,11 @@ const addHabit = async ({ request, response }:
   } else {
     try {
       await client.connect()
-      const result = await client.query(`INSERT INTO habits(user_id, habit, completed, target_date)
-      VALUES('${habit.user_id}', '${habit.habit}',false,'${habit.target_date}')`)
+
+      const result = await client.query(
+        `INSERT INTO habits(goal_id, habit, amount, freq) VALUES('${habit.goal_id}','${habit.habit}','${habit.amount}','${habit.freq}')`
+        )
+
 
       response.status = 201
       response.body = {
@@ -98,6 +101,7 @@ const addHabit = async ({ request, response }:
         data: habit
       }
     } catch (err) {
+      console.log(err)
       response.status = 500
       response.body = {
         success: false,
@@ -134,9 +138,10 @@ const updateHabit = async ({ params, request, response }:
         await client.connect()
 
         const result = await client.query(`UPDATE habits SET
+
           habit='${habit.habit}',
-          target_date='${habit.target_date}',
-          completed='${habit.completed}'
+          amount='${habit.amount}',
+          freq='${habit.freq}'
           WHERE id=${params.id}`)
 
         response.status = 200
