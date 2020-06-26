@@ -90,10 +90,8 @@ const addHabit = async ({ request, response }:
     try {
       await client.connect()
 
-      const result = await client.query(
-        `INSERT INTO habits(goal_id, habit, amount, freq) VALUES('${habit.goal_id}','${habit.habit}','${habit.amount}','${habit.freq}')`
-        )
-
+      const result = await client.query(`INSERT INTO habits(goal_id, habit, amount, freq)
+      VALUES('${habit.goal_id}','${habit.habit}','${habit.amount}','${habit.freq}')`)
 
       response.status = 201
       response.body = {

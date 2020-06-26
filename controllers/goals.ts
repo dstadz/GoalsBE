@@ -160,6 +160,7 @@ const deleteGoal = async ({ params, response }:
   { params: { id:string }, response: any }) => {
   await getGoal({ params: { "id": params.id } , response })
 
+  console.log(params.id, response)
   if (response.status === 404) {
     response.status = 404
     response.body = {
