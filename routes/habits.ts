@@ -2,6 +2,7 @@ import { Router } from "http://deno.land/x/oak/mod.ts";
 import {
   getHabits,
   getHabit,
+  getHabitList,
   addHabit,
   updateHabit,
   deleteHabit,
@@ -10,6 +11,7 @@ import {
 const habitRouter = new Router();
 
 habitRouter.get("/api/habits",getHabits)
+    .get("/api/habitList/:id",getHabitList)
     .get("/api/habits/:id",getHabit)
     .post("/api/habits",addHabit)
     .put("/api/habits/:id",updateHabit)
