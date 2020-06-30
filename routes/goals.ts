@@ -7,12 +7,12 @@ import {
   deleteGoal,
 } from "../controllers/goals.ts";
 
-const goalRouter = new Router();
+const goalsRouter = new Router();
 
-goalRouter.get("/api/goals",getGoals)
+goalsRouter.get("/api/goals",getGoals)
     .get("/api/goals/:id",getGoal)
     .post("/api/goals",addGoal)
     .put("/api/goals/:id",updateGoal)
     .delete("/api/goals/:id",deleteGoal)
 
-export default goalRouter;
+export default goalsRouter;

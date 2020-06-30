@@ -72,13 +72,39 @@ const getHabit = async ({ params, response }:
   } finally { await client.end() }
 }
 
+const getHabitList = async ({ params, response }:
+  { params: { id: string }, response: any }) => {
+  try {
+    await client.connect()
+
+    const result = await client.query(`SELECT * FROM habits WHERE goal_id = ${params.id}`)
+    const habits = new Array()
+
+    result.rows.map(p => {
+      let obj:any  = new Object()
+
+      result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] })
+      habits.push(obj)
+    })
+    response.body = {
+      success: true,
+      data: habits
+    }
+  } catch (err) {
+    response.status = 500
+    response.body = {
+      success: false,
+      msg: err.toString()
+    }
+  } finally { await client.end() }
+}
 // @desc add habit
 // @route Post /api/v1/habits
 const addHabit = async ({ request, response }:
   { request: any, response: any }) => {
   const body = await request.body()
   const habit = body.value
-
+  console.log(habit)
   if(!request.hasBody) {
     response.status = 404
     response.body = {
@@ -192,4 +218,4 @@ const deleteHabit = async ({ params, response }:
   }
 }
 
-export { getHabits, getHabit, addHabit, updateHabit, deleteHabit }
+export { getHabits, getHabitList, getHabit, addHabit, updateHabit, deleteHabit }
