@@ -8,13 +8,13 @@ import {
   deleteHabit,
 } from "../controllers/habits.ts";
 
-const habitRouter = new Router();
+const habitsRouter = new Router();
 
-habitRouter.get("/api/habits",getHabits)
-    .get("/api/habitList/:id",getHabitList)
-    .get("/api/habits/:id",getHabit)
-    .post("/api/habits",addHabit)
-    .put("/api/habits/:id",updateHabit)
-    .delete("/api/habits/:id",deleteHabit)
+habitsRouter.get("/api/habits",getHabits)
+            //.get("/api/habitList/:id",getHabitList)  //get single habit
+            .get("/api/habits/:id",getHabitList)
+            .post("/api/habits",addHabit)
+            .put("/api/habits/:id",updateHabit)
+            .delete("/api/habits/:id",deleteHabit)
 
-export default habitRouter;
+export default habitsRouter;
