@@ -68,39 +68,28 @@ const getHabit = async ({ params, response }: { params: { id: string }, response
 
 // get habitlist by goal_id
 const getHabitList = async ({ params, response }: { params: { id: string }, response: any }) => {
-
-  console.log(params.id, response)
-
-
   try { await client.connect();
     const result = await client.query(`SELECT * FROM habits WHERE goal_id = ${params.id}`);
     const habits = new Array();
-
-
-    console.log(`get habit ${params.id}`)
-
 
     result.rows.map(p => {
       let obj:any  = new Object();
       result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] });
       habits.push(obj);
-
-
-      console.log(obj)
     })
 
-
-    console.log('habits:', habits)
     response.body = {
       success: true,
       data: habits
     };
+
   } catch (err) {
     response.status = 500;
     response.body = {
       success: false,
       msg: err.toString()
     };
+
   } finally { await client.end(); }
 };
 // @desc add habit

@@ -18,3 +18,4 @@ habitsRouter.get("/habits",getHabits)
             .delete("/habits/:id",deleteHabit)
 
 export default habitsRouter;
+ 
