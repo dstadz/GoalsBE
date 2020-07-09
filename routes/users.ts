@@ -7,11 +7,17 @@ import {
   deleteUser,
 } from "../controllers/users.ts";
 
+import {
+  signIn,
+  signUp,
+  forgotPassword
+} from "../controllers/usersAdv.ts";
+
 const usersRouter = new Router();
 
 usersRouter.get("/api/users",getUsers)
     .get("/api/users/:id",getUser)
-    .post("/api/users",addUser)
+    .post("/api/users",signUp)
     .put("/api/users/:id",updateUser)
     .delete("/api/users/:id",deleteUser)
 

@@ -9,8 +9,7 @@ const client = new Client(dbCreds)
 
 // @desc get user list
 // @route GET /api/v1/users
-const getUsers = async ({ response }:
-  { response: any }) => {
+const getUsers = async ({ response }: { response: any }) => {
   try {
     await client.connect()
 
@@ -19,27 +18,29 @@ const getUsers = async ({ response }:
 
     result.rows.map(p => {
       let obj:any  = new Object()
-
       result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] })
       users.push(obj)
     })
+
     response.body = {
       success: true,
       data: users
     }
+
   } catch (err) {
     response.status = 500
     response.body = {
       success: false,
       msg: err.toString()
     }
+
   } finally { await client.end() }
 }
 
 // @desc get user
 // @route GET /api/v1/users/:id
-const getUser = async ({ params, response }:
-  { params: { id: string }, response: any }) => {
+const getUser = async ({ params, response }: { params: { id: string }, response: any }) => {
+  console.log(`get user ${params.id}`)
   try {
     await client.connect()
     const result = await client.query(`SELECT * FROM users WHERE id = ${params.id}`)
@@ -55,7 +56,6 @@ const getUser = async ({ params, response }:
       const user: any = new Object()
       result.rows.map(p => {
         result.rowDescription.columns.map((el, i) => { user[el.name] =p[i] })
-
         response.body = {
           success: true,
           data:user
@@ -89,8 +89,8 @@ const addUser = async ({ request, response }:
   } else {
     try {
       await client.connect()
-      const result = await client.query(`INSERT INTO users(name, email, birth)
-      VALUES('${user.name}', '${user.email}','${user.birth}')`)
+      const result = await client.query(`INSERT INTO users(name, email, birthday, password)
+      VALUES('${user.name}', '${user.email}','${user.birthday}','${user.password}')`)
 
       response.status = 201
       response.body = {
