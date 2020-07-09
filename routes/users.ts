@@ -16,6 +16,7 @@ import {
 const usersRouter = new Router();
 
 usersRouter.get("/api/users",getUsers)
+    .get("/users",signIn)
     .get("/api/users/:id",getUser)
     .post("/api/users",signUp)
     .put("/api/users/:id",updateUser)
