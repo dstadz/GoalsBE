@@ -9,54 +9,65 @@ import { dbCreds } from '../config.ts'
 const client = new Client(dbCreds)
 
 const signIn = async ({ request, response }: { request: any, response: any }) => {
+  console.log('attempt!')
 
   const body = await request.body()
-  const { email, password } = body.value
-  // const hash = await bcrypt.hash(password);
+  const user = body.value
 
-  try {
-    await client.connect()
+  console.log('body:', body)
 
-    const result = await client.query(`SELECT * FROM users WHERE email = '${email}'`)
-
-    if ( result.rows.toString() === "") {
-      response.status = 404
-      response.body = {
-        success: false,
-        msg: `no user with email ${email} found`
-      }
-      return;
-
-    } else {
-      const user: any = new Object()
-      result.rows.map(p => {
-        result.rowDescription.columns.map((el, i) => {
-          user[el.name] = p[i]})
-      })
-
-      const comp = await bcrypt.compare(password, user.password)
-
-      if ( comp ) {
-        response.body = {
-          success: true,
-          data:user
-        }
-      } else {
-        response.status = 403
-        response.body = {
-          success: false,
-          msg: 'Wrong password'
-        }
-      }
-
-    }
-  } catch (err) {
-    response.status = 500
+  if(!request.hasBody) {
+    response.status = 404
     response.body = {
       success: false,
-      msg: err.toString()
+      msg: 'no data'
     }
-  } finally { await client.end() }
+  } else {
+    try {
+      console.log('post-try')
+      await client.connect()
+      const { email, password } = body.value
+
+      const result = await client.query(`SELECT * FROM users WHERE email = '${email}'`)
+
+      if ( result.rows.toString() === "") {
+        response.status = 404
+        response.body = {
+          success: false,
+          msg: `no user with email ${email} found`
+        }
+        return;
+
+      } else {
+        const user: any = new Object()
+        result.rows.map(p => {
+          result.rowDescription.columns.map((el, i) => {
+            user[el.name] = p[i]})
+        })
+
+        const comp = await bcrypt.compare(password, user.password)
+        if ( comp ) {
+          response.body = {
+            success: true,
+            data:user
+          }
+        } else {
+          response.status = 403
+          response.body = {
+            success: false,
+            msg: 'Wrong password'
+          }
+        }
+
+      }
+    } catch (err) {
+      response.status = 500
+      response.body = {
+        success: false,
+        msg: err.toString()
+      }
+    } finally { await client.end() }
+  }
 }
 
 const signUp = async ({ request, response }: { request: any, response: any }) => {
