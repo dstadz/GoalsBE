@@ -10,7 +10,7 @@ const client = new Client(dbCreds)
 // @desc get goal list
 // @route GET /api/v1/goals
 const getGoals = async ({ response }:
-  { response: any }) => {
+{ response: any }) => {
   try {
     await client.connect()
 
@@ -19,27 +19,29 @@ const getGoals = async ({ response }:
 
     result.rows.map(p => {
       let obj:any  = new Object()
-
       result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] })
       goals.push(obj)
     })
+
     response.body = {
       success: true,
       data: goals
     }
+
   } catch (err) {
     response.status = 500
     response.body = {
       success: false,
       msg: err.toString()
     }
+
   } finally { await client.end() }
 }
 
 // @desc get goal
 // @route GET /api/v1/goals/:id
 const getGoal = async ({ params, response }:
-  { params: { id: string }, response: any }) => {
+{ params: { id: string }, response: any }) => {
   try {
     await client.connect()
     const result = await client.query(`SELECT * FROM goals WHERE id = ${params.id}`)
@@ -55,7 +57,6 @@ const getGoal = async ({ params, response }:
       const goal: any = new Object()
       result.rows.map(p => {
         result.rowDescription.columns.map((el, i) => { goal[el.name] =p[i] })
-
         response.body = {
           success: true,
           data:goal
@@ -75,7 +76,7 @@ const getGoal = async ({ params, response }:
 // @desc add goal
 // @route Post /api/v1/goals
 const addGoal = async ({ request, response }:
-  { request: any, response: any }) => {
+{ request: any, response: any }) => {
   const body = await request.body()
   const goal = body.value
 
@@ -97,12 +98,14 @@ const addGoal = async ({ request, response }:
         success: true,
         data: goal
       }
+
     } catch (err) {
       response.status = 500
       response.body = {
         success: false,
         msg: err.toString()
       }
+
     } finally { await client.end() }
   }
 }
@@ -110,7 +113,7 @@ const addGoal = async ({ request, response }:
 // @desc update goal
 // @route put /api/v1/goals/:id
 const updateGoal = async ({ params, request, response }:
-  { params: { id: string }, request:any, response: any }) => {
+{ params: { id: string }, request:any, response: any }) => {
   await getGoal({ params: {"id": params.id} , response})
   if (response.status === 404) {
     response.status = 404
@@ -119,6 +122,7 @@ const updateGoal = async ({ params, request, response }:
       msg: response.body
     }
     return;
+
   } else {
     const body = await request.body()
     const goal = body.value
@@ -129,10 +133,10 @@ const updateGoal = async ({ params, request, response }:
         success: false,
         msg: 'we messed up'
       }
+
     } else {
       try {
         await client.connect()
-
         const result = await client.query(`UPDATE goals SET
           goal='${goal.goal}',
           target_date='${goal.target_date}',
@@ -157,7 +161,7 @@ const updateGoal = async ({ params, request, response }:
 // @desc delete goal
 // @route delete /api/v1/goals/:id
 const deleteGoal = async ({ params, response }:
-  { params: { id:string }, response: any }) => {
+{ params: { id:string }, response: any }) => {
   await getGoal({ params: { "id": params.id } , response })
 
   console.log(params.id, response)
