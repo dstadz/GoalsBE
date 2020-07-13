@@ -9,12 +9,8 @@ import { dbCreds } from '../config.ts'
 const client = new Client(dbCreds)
 
 const signIn = async ({ request, response }: { request: any, response: any }) => {
-  console.log('attempt!')
-
   const body = await request.body()
-  const user = body.value
-
-  console.log('body:', body)
+  console.log(request)
 
   if(!request.hasBody) {
     response.status = 404
@@ -24,10 +20,8 @@ const signIn = async ({ request, response }: { request: any, response: any }) =>
     }
   } else {
     try {
-      console.log('post-try')
       await client.connect()
       const { email, password } = body.value
-
       const result = await client.query(`SELECT * FROM users WHERE email = '${email}'`)
 
       if ( result.rows.toString() === "") {
@@ -58,7 +52,6 @@ const signIn = async ({ request, response }: { request: any, response: any }) =>
             msg: 'Wrong password'
           }
         }
-
       }
     } catch (err) {
       response.status = 500
@@ -73,10 +66,10 @@ const signIn = async ({ request, response }: { request: any, response: any }) =>
 const signUp = async ({ request, response }: { request: any, response: any }) => {
   const body = await request.body()
   const user = body.value
-
   const hash = bcrypt.hashSync(user.password);
 
   if(!request.hasBody) {
+    console.log('aint no body')
     response.status = 404
     response.body = {
       success: false,
@@ -86,14 +79,25 @@ const signUp = async ({ request, response }: { request: any, response: any }) =>
   } else {
     try {
       await client.connect()
-      const result = await client.query(`INSERT INTO users(name, email, birthday, password)
-      VALUES('${user.name}', '${user.email}','${user.birthday}','${hash}')`)
+      const search = await client.query(`SELECT * FROM users WHERE email = '${user.email}'`)
 
-      response.status = 201
-      response.body = {
-        success: true,
-        data: user
+      //check if user already in DB
+      if ( search.rows.toString() === "") {
+        const result = await client.query(`INSERT INTO users(name, email, birthday, password)
+        VALUES('${user.name}', '${user.email}','${user.birthday}','${hash}')`)
+
+        response.status = 201
+        response.body = {
+          success: true,
+          data: user
+        }
+      } else {
+        response.status = 409
+        response.body = {
+          data: {msg:'Sorry Bud, that email is already being used by someone'}
+        }
       }
+        return;
     } catch (err) {
       response.status = 500
       response.body = {

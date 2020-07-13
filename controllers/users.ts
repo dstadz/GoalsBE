@@ -155,8 +155,7 @@ const updateUser = async ({ params, request, response }: { params: { id: string 
 }
 // @desc delete user
 // @route delete /api/v1/users/:id
-const deleteUser = async ({ params, response }:
-  { params: { id:string }, response: any }) => {
+const deleteUser = async ({ params, response }: { params: { id:string }, response: any }) => {
   await getUser({ params: { "id": params.id } , response })
 
   if (response.status === 404) {
