@@ -40,7 +40,6 @@ const getUsers = async ({ response }: { response: any }) => {
 // @desc get user
 // @route GET /api/v1/users/:id
 const getUser = async ({ params, response }: { params: { id: string }, response: any }) => {
-  console.log(`get user ${params.id}`)
   try {
     await client.connect()
     const result = await client.query(`SELECT * FROM users WHERE id = ${params.id}`)
@@ -74,10 +73,11 @@ const getUser = async ({ params, response }: { params: { id: string }, response:
 
 // @desc add user
 // @route Post /api/v1/users
-const addUser = async ({ request, response }:
-  { request: any, response: any }) => {
+const addUser = async ({ request, response }: { request: any, response: any }) => {
   const body = await request.body()
   const user = body.value
+
+  console.log(user)
 
   if(!request.hasBody) {
     response.status = 404
@@ -109,8 +109,7 @@ const addUser = async ({ request, response }:
 
 // @desc update user
 // @route put /api/v1/users/:id
-const updateUser = async ({ params, request, response }:
-  { params: { id: string }, request:any, response: any }) => {
+const updateUser = async ({ params, request, response }: { params: { id: string }, request:any, response: any }) => {
   await getUser({ params: {"id": params.id} , response})
   if (response.status === 404) {
     response.status = 404
@@ -156,8 +155,7 @@ const updateUser = async ({ params, request, response }:
 }
 // @desc delete user
 // @route delete /api/v1/users/:id
-const deleteUser = async ({ params, response }:
-  { params: { id:string }, response: any }) => {
+const deleteUser = async ({ params, response }: { params: { id:string }, response: any }) => {
   await getUser({ params: { "id": params.id } , response })
 
   if (response.status === 404) {

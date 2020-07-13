@@ -27,6 +27,7 @@ const getGoals = async ({ response }:
       success: true,
       data: goals
     }
+    console.log(goals)
 
   } catch (err) {
     response.status = 500
