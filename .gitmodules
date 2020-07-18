@@ -1,3 +1,3 @@
 [submodule "path_to_submodule"]
   path = "./server.ts"
-  url = git://https://github.com/dstadz/GoalsBE
+  url = git://dstadz/GoalsBE
