@@ -97,11 +97,7 @@ const getHabitList = async ({ params, response }: { params: { id: string }, resp
 const addHabit = async ({ request, response }: { request: any, response: any }) => {
   const body = await request.body();
   const habit = body.value;
-  
-  
-  console.log(habit)
-  
-  
+
   if(!request.hasBody) {
     response.status = 404;
     response.body = {
