@@ -1,3 +1,3 @@
 [submodule "goals-be"]
-  path = ./
+  path = ./server
   url = https://github.com/dstadz/GoalsBE.git
