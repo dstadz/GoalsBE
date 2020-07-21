@@ -7,215 +7,194 @@ import { dbCreds } from '../config.ts'
 const client = new Client(dbCreds)
 
 
-// @desc get habit list
-// @route GET /api/v1/habits
-const getHabits = async ({ response }:
-  { response: any }) => {
+// get all habits
+const getHabits = async ({ response }: { response: any }) => {
   try {
-    await client.connect()
-
-    const result = await client.query("SELECT * FROM habits")
-    const habits = new Array()
+    await client.connect();
+    const result = await client.query("SELECT * FROM habits");
+    const habits = new Array();
 
     result.rows.map(p => {
-      let obj:any  = new Object()
+      let obj:any  = new Object();
+      result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] });
+      habits.push(obj);
+    });
 
-      result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] })
-      habits.push(obj)
-    })
     response.body = {
       success: true,
       data: habits
-    }
+    };
+
   } catch (err) {
-    response.status = 500
+    response.status = 500;
     response.body = {
       success: false,
       msg: err.toString()
-    }
-  } finally { await client.end() }
-}
+    };
+  } finally { await client.end(); }
+};
 
-// @desc get habit
-// @route GET /api/v1/habits/:id
-const getHabit = async ({ params, response }:
-  { params: { id: string }, response: any }) => {
-  try {
-    await client.connect()
-    const result = await client.query(`SELECT * FROM habits WHERE id = ${params.id}`)
+// get habit by id
+const getHabit = async ({ params, response }: { params: { id: string }, response: any }) => {
+  try { await client.connect();
+    const result = await client.query(`SELECT * FROM habits WHERE id = ${params.id}`);
+
     if ( result.rows.toString() === "") {
-      response.status = 404
+      response.status = 404;
       response.body = {
         success: false,
         msg: `no habit with id ${params.id} found`
-      }
+      };
       return;
-
     } else {
-      const habit: any = new Object()
+      const habit: any = new Object();
       result.rows.map(p => {
-        result.rowDescription.columns.map((el, i) => { habit[el.name] =p[i] })
+        result.rowDescription.columns.map((el, i) => { habit[el.name] =p[i] });
 
         response.body = {
           success: true,
           data:habit
-        }
-      })
-    }
-
+        };
+      });
+    };
   } catch (err) {
-    response.status = 500
+    response.status = 500;
     response.body = {
       success: false,
       msg: err.toString()
-    }
-  } finally { await client.end() }
-}
+    };
+  } finally { await client.end(); }
+};
 
-const getHabitList = async ({ params, response }:
-  { params: { id: string }, response: any }) => {
-  try {
-    await client.connect()
-
-    const result = await client.query(`SELECT * FROM habits WHERE goal_id = ${params.id}`)
-    const habits = new Array()
+// get habitlist by goal_id
+const getHabitList = async ({ params, response }: { params: { id: string }, response: any }) => {
+  try { await client.connect();
+    const result = await client.query(`SELECT * FROM habits WHERE goal_id = ${params.id}`);
+    const habits = new Array();
 
     result.rows.map(p => {
-      let obj:any  = new Object()
-
-      result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] })
-      habits.push(obj)
+      let obj:any  = new Object();
+      result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] });
+      habits.push(obj);
     })
+
     response.body = {
       success: true,
       data: habits
-    }
+    };
+
   } catch (err) {
-    response.status = 500
+    response.status = 500;
     response.body = {
       success: false,
       msg: err.toString()
-    }
-  } finally { await client.end() }
-}
+    };
+
+  } finally { await client.end(); }
+};
 // @desc add habit
 // @route Post /api/v1/habits
-const addHabit = async ({ request, response }:
-  { request: any, response: any }) => {
-  const body = await request.body()
-  const habit = body.value
-  console.log(habit)
+const addHabit = async ({ request, response }: { request: any, response: any }) => {
+  const body = await request.body();
+  const habit = body.value;
+
   if(!request.hasBody) {
-    response.status = 404
+    response.status = 404;
     response.body = {
       success: false,
       msg: 'no data'
-    }
+    };
 
-  } else {
-    try {
-      await client.connect()
-
+  } else { try { await client.connect();
       const result = await client.query(`INSERT INTO habits(goal_id, habit, amount, freq)
-      VALUES('${habit.goal_id}','${habit.habit}','${habit.amount}','${habit.freq}')`)
+      VALUES('${habit.goal_id}','${habit.habit}','${habit.amount}','${habit.freq}')`);
 
-      response.status = 201
+      response.status = 201;
       response.body = {
         success: true,
         data: habit
-      }
+      };
     } catch (err) {
-      console.log(err)
-      response.status = 500
+      //console.log(err)
+      response.status = 500;
       response.body = {
         success: false,
         msg: err.toString()
-      }
-    } finally { await client.end() }
-  }
-}
+      };
+    } finally { await client.end(); }
+  };
+};
 
 // @desc update habit
 // @route put /api/v1/habits/:id
-const updateHabit = async ({ params, request, response }:
-  { params: { id: string }, request:any, response: any }) => {
-  await getHabit({ params: {"id": params.id} , response})
+const updateHabit = async ({ params, request, response }: { params: { id: string }, request:any, response: any }) => {
+  await getHabit({ params: {"id": params.id} , response});
   if (response.status === 404) {
-    response.status = 404
+    response.status = 404;
     response.body = {
       success: false,
       msg: response.body
-    }
+    };
     return;
   } else {
-    const body = await request.body()
-    const habit = body.value
+    const body = await request.body();
+    const habit = body.value;
 
     if(!request.hasBody) {
-      response.status = 404
+      response.status = 404;
       response.body = {
         success: false,
         msg: 'we messed up'
-      }
-    } else {
-      try {
-        await client.connect()
-
+      };
+    } else { try { await client.connect();
         const result = await client.query(`UPDATE habits SET
-
           habit='${habit.habit}',
           amount='${habit.amount}',
           freq='${habit.freq}'
-          WHERE id=${params.id}`)
+          WHERE id=${params.id}`);
 
-        response.status = 200
+        response.status = 200;
         response.body = {
           success: true,
           data: habit
-        }
+        };
       } catch (err) {
-        response.status = 500
+        response.status = 500;
         response.body = {
           success: false,
           msg: err.toString()
-        }
-      } finally { await client.end() }
-    }
-  }
-}
+        };
+      } finally { await client.end(); }
+    };
+  };
+};
 // @desc delete habit
 // @route delete /api/v1/habits/:id
-const deleteHabit = async ({ params, response }:
-  { params: { id:string }, response: any }) => {
-  await getHabit({ params: { "id": params.id } , response })
+const deleteHabit = async ({ params, response }: { params: { id:string }, response: any }) => {
+  await getHabit({ params: { "id": params.id } , response });
 
   if (response.status === 404) {
-    response.status = 404
+    response.status = 404;
     response.body = {
       success: false,
       msg: response.body
-    }
+    };
     return;
-
-  } else {
-    try {
-      await client.connect()
-
-      const result = await client.query(`DELETE FROM habits WHERE id = ${params.id}`)
-      response.status = 204
+  } else { try { await client.connect();
+      const result = await client.query(`DELETE FROM habits WHERE id = ${params.id}`);
+      response.status = 204;
       response.body = {
         success: true,
         msg: `Habit ${params.id} has been deleted`
-      }
-
+      };
     } catch (err) {
-      response.status = 500
+      response.status = 500;
       response.body = {
         success: false,
         msg: err.toString()
-      }
-    } finally { await client.end() }
-  }
-}
+      };
+    } finally { await client.end(); }
+  };
+};
 
-export { getHabits, getHabitList, getHabit, addHabit, updateHabit, deleteHabit }
+export { getHabits, getHabitList, getHabit, addHabit, updateHabit, deleteHabit };

@@ -9,8 +9,7 @@ const client = new Client(dbCreds)
 
 // @desc get user list
 // @route GET /api/v1/users
-const getUsers = async ({ response }:
-  { response: any }) => {
+const getUsers = async ({ response }: { response: any }) => {
   try {
     await client.connect()
 
@@ -19,27 +18,28 @@ const getUsers = async ({ response }:
 
     result.rows.map(p => {
       let obj:any  = new Object()
-
       result.rowDescription.columns.map((el, i) => { obj[el.name] = p[i] })
       users.push(obj)
     })
+
     response.body = {
       success: true,
       data: users
     }
+
   } catch (err) {
     response.status = 500
     response.body = {
       success: false,
       msg: err.toString()
     }
+
   } finally { await client.end() }
 }
 
 // @desc get user
 // @route GET /api/v1/users/:id
-const getUser = async ({ params, response }:
-  { params: { id: string }, response: any }) => {
+const getUser = async ({ params, response }: { params: { id: string }, response: any }) => {
   try {
     await client.connect()
     const result = await client.query(`SELECT * FROM users WHERE id = ${params.id}`)
@@ -55,7 +55,6 @@ const getUser = async ({ params, response }:
       const user: any = new Object()
       result.rows.map(p => {
         result.rowDescription.columns.map((el, i) => { user[el.name] =p[i] })
-
         response.body = {
           success: true,
           data:user
@@ -74,10 +73,11 @@ const getUser = async ({ params, response }:
 
 // @desc add user
 // @route Post /api/v1/users
-const addUser = async ({ request, response }:
-  { request: any, response: any }) => {
+const addUser = async ({ request, response }: { request: any, response: any }) => {
   const body = await request.body()
   const user = body.value
+
+  console.log(user)
 
   if(!request.hasBody) {
     response.status = 404
@@ -89,8 +89,8 @@ const addUser = async ({ request, response }:
   } else {
     try {
       await client.connect()
-      const result = await client.query(`INSERT INTO users(name, email, birth)
-      VALUES('${user.name}', '${user.email}','${user.birth}')`)
+      const result = await client.query(`INSERT INTO users(name, email, birthday, password)
+      VALUES('${user.name}', '${user.email}','${user.birthday}','${user.password}')`)
 
       response.status = 201
       response.body = {
@@ -109,8 +109,7 @@ const addUser = async ({ request, response }:
 
 // @desc update user
 // @route put /api/v1/users/:id
-const updateUser = async ({ params, request, response }:
-  { params: { id: string }, request:any, response: any }) => {
+const updateUser = async ({ params, request, response }: { params: { id: string }, request:any, response: any }) => {
   await getUser({ params: {"id": params.id} , response})
   if (response.status === 404) {
     response.status = 404
@@ -156,8 +155,7 @@ const updateUser = async ({ params, request, response }:
 }
 // @desc delete user
 // @route delete /api/v1/users/:id
-const deleteUser = async ({ params, response }:
-  { params: { id:string }, response: any }) => {
+const deleteUser = async ({ params, response }: { params: { id:string }, response: any }) => {
   await getUser({ params: { "id": params.id } , response })
 
   if (response.status === 404) {

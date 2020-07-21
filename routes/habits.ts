@@ -10,11 +10,12 @@ import {
 
 const habitsRouter = new Router();
 
-habitsRouter.get("/api/habits",getHabits)
-            //.get("/api/habitList/:id",getHabitList)  //get single habit
-            .get("/api/habits/:id",getHabitList)
-            .post("/api/habits",addHabit)
-            .put("/api/habits/:id",updateHabit)
-            .delete("/api/habits/:id",deleteHabit)
+habitsRouter.get("/habits",getHabits)
+            //.get("/habitList/:id",getHabitList)  //get single habit
+            .get("/habits/:id",getHabitList)
+            .post("/habits",addHabit)
+            .put("/habits/:id",updateHabit)
+            .delete("/habits/:id",deleteHabit)
 
 export default habitsRouter;
+ 
