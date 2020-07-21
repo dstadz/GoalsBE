@@ -1,21 +1,21 @@
 import { Application } from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
-
+import * as flags from "https://deno.land/std/flags/mod.ts";
 
 import userRouter from './routes/users.ts'
 import goalsRouter from './routes/goals.ts'
 import habitsRouter from './routes/habits.ts'
 
-const port = 8000
+
+const { args } = Deno;
+const DEFAULT_PORT = 8080;
+const argPort = flags.parse(args).port;
+const port = argPort ? Number(argPort) : DEFAULT_PORT;
+
+
 const app = new Application()
-
-app.use(
-  oakCors({
-    origin: "http://localhost:3000"
-  }),
-);
+app.use( oakCors({ origin: "http://localhost:3000" }) );
 // app.use(oakCors())
-
 
 app.use(goalsRouter.routes())
 app.use(habitsRouter.routes())
