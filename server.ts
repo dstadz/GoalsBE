@@ -14,8 +14,7 @@ const port = argPort ? Number(argPort) : DEFAULT_PORT;
 
 
 const app = new Application()
-app.use( oakCors({ origin: "http://localhost:3000" }) );
-// app.use(oakCors())
+app.use(oakCors())
 
 app.use(goalsRouter.routes())
 app.use(habitsRouter.routes())
