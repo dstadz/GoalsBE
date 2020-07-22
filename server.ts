@@ -24,7 +24,6 @@ app.use(goalsRouter.allowedMethods())
 app.use(habitsRouter.allowedMethods())
 app.use(userRouter.allowedMethods())
 
-
 console.log(`\n\n server live on port ${port} \n\n`)
 
 await app.listen({ port })
